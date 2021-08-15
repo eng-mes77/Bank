@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 
 #nullable disable
 
@@ -8,13 +10,18 @@ namespace Bank.Models
 {
     public partial class auditContext : DbContext
     {
+        string connectionString = "";
         public auditContext()
         {
+            var builder = new ConfigurationBuilder().AddJsonFile($"appsettings.json", true, true);
+            var config = builder.Build();
+            connectionString = config["ConnectionStrings:sqlConnection"];
         }
 
         public auditContext(DbContextOptions<auditContext> options)
             : base(options)
         {
+
         }
 
         public virtual DbSet<Bank> Banks { get; set; }
@@ -51,8 +58,7 @@ namespace Bank.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=.;Database=audit;User Id=sa;Password=123;");
+                optionsBuilder.UseSqlServer(connectionString);
             }
         }
 
@@ -290,7 +296,7 @@ namespace Bank.Models
 
             modelBuilder.Entity<LoanDetailsLevel>(entity =>
             {
-                entity.Property(e => e.LdlId).ValueGeneratedNever();
+                entity.Property(e => e.LdlId);
 
                 entity.Property(e => e.Checking).HasComment("جاری");
 
@@ -394,7 +400,6 @@ namespace Bank.Models
                 entity.HasComment("جزئیات کسری ها از تسهیلات مطابق بند 12 و 13-3");
 
                 entity.Property(e => e.LlsId)
-                    .ValueGeneratedNever()
                     .HasComment("شناسه کسریها");
 
                 entity.Property(e => e.BankId).HasComment("شناسه بانک (کلید خارجی از جدول بانک)");

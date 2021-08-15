@@ -20,5 +20,19 @@ namespace Bank
             [Display(Name = "مشکوک الوصول")]
             Doubtful,
         }
+
+
+        public enum Loan_spec
+        {
+            [Display(Name = "سود سال‌های آتی")]
+            Future_interest,
+            [Display(Name = "سود و کارمزد معوق")]
+            Deferred_interest_And_fees,
+            [Display(Name = "وجوه دریافتی بابت مضاربه")]
+            Receivables_for_Mudaraba,
+            [Display(Name = "حساب مشترک مدنی")]
+            Joint_acc_civil_participation,
+        }
+
     }
 }
